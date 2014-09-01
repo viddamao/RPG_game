@@ -28,15 +28,13 @@ public void start(Stage stage){
 	 HBox bgbox = new HBox();
      bgbox.getChildren().add(background);
 	 
-     file = new File(".//res//hero//paladin.jpg");
-     Image heroImage=new Image(file.toURI().toString(),80,80,true,false);
+     file = new File(".//res//enemy//Skeleton_Warrior.png");
+     Image heroImage=new Image(file.toURI().toString(),80,80,false,false);
 	 
 	 ImageView hero=new ImageView();
 	 hero.setImage(heroImage);
 	 
-	  AnchorPane anchorpane = new AnchorPane();
-	 
-	  
+	
 	  
 	 HBox box2=new HBox();
 	 box2.getChildren().add(hero);
