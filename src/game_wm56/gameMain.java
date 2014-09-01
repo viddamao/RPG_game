@@ -43,11 +43,33 @@ public void start(Stage stage) throws IOException{
 
 private void moveCursor(int i, int j, Stage stage) {
 	
-   if (j==1) confirmAction(stage);
-   if (i==1) cancelAction();
+   if (j==1) {confirmAction(stage); return;}
+   if (i==1) {cancelAction();return;}
+   if (i==-1) {attackAction(stage);return;}
    CursorX+=i;
    CursorY+=j;
    
+}
+
+private void attackAction(Stage stage) {
+
+	
+	if ((enemy.hasEnemy(CursorX/100,CursorY/100+1))||
+	(enemy.hasEnemy(CursorX/100-1,CursorY/100))||
+	(enemy.hasEnemy(CursorX/100+1,CursorY/100))||
+	(enemy.hasEnemy(CursorX/100,CursorY/100-1)))
+	{
+		displayRedCursor(stage);
+	}
+}
+
+private void displayRedCursor(Stage stage) {
+	SetImage(stage,"background//cursor.png",CursorX+100,CursorY,!Is_Map);	
+	SetImage(stage,"background//cursor.png",CursorX-100,CursorY,!Is_Map);
+	SetImage(stage,"background//cursor.png",CursorX,CursorY+100,!Is_Map);
+	SetImage(stage,"background//cursor.png",CursorX,CursorY-100,!Is_Map);
+  
+ 	
 }
 
 private void cancelAction() {
@@ -79,7 +101,8 @@ addButton(stage,720,520,"  LEFT  ",-100,0);
 addButton(stage,880,520,"  RIGHT ",100,0);
 
 addButton(stage,80,500,"CONFIRM",0,1);
-addButton(stage,180,500,"CANCEL ",1,0);
+addButton(stage,160,500,"CANCEL ",1,0);
+addButton(stage,240,500,"ATTACK ",-1,0);
 
 stage.setScene(scene);
 stage.show();
@@ -165,8 +188,9 @@ private void displayContents(Stage stage) {
 private void displayCursor(int cursorX, int cursorY, Stage stage) {
 	SetImage(stage,"background//cursor_blue.png",cursorX,cursorY,!Is_Map);
 	
-//	SetImage(stage,"background//cursor.png",cursorX+100,cursorY,!Is_Map);
-	
+	//SetImage(stage,"background//cursor.png",cursorX+100,cursorY,!Is_Map);
+
+
 }
 
 
@@ -178,7 +202,7 @@ private void LoadContents(Stage stage) throws IOException {
      System.out.println(s.next());		
 		
 	}
-	
+  enemy.enemy_Init();	
     
 
 }
