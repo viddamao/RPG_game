@@ -7,10 +7,12 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -24,7 +26,7 @@ private static final boolean Is_Map = true;
 private	Group root = new Group();
 private Scene scene = new Scene(root);
 private Image img=null;
-private int CursorX = 0, CursorY = 0;
+private int CursorX = 100, CursorY = 200;
 
 
 
@@ -36,17 +38,57 @@ public void start(Stage stage) throws IOException{
 	stage.setTitle("Legend of Paladins");
 	stage.setResizable(false);
 	 
-	gameprocess(stage, null);
+	gameProcess(stage);
 }
 
+private void moveCursor(int i, int j, Stage stage) {
+	
+   if (j==1) confirmAction(stage);
+   if (i==1) cancelAction();
+   CursorX+=i;
+   CursorY+=j;
+   
+}
 
-private  void gameprocess(Stage stage, KeyEvent e) {
+private void cancelAction() {
+	CursorX=hero.getX();
+	CursorY=hero.getY();
+}
+
+private void confirmAction(Stage stage) {
+	if ((CursorX!=hero.getX())||(CursorY!=hero.getY()))
+			{
+		   hero.setX(CursorX);
+		   hero.setY(CursorY);
+		   
+			}
+	resetStage(stage);
+	
+}
+
+private  void gameProcess(Stage stage) {
 
 
-displayContents(stage);
-displayCursor(CursorX,CursorY, stage);
 
-System.out.println("123");
+resetStage(stage);
+
+
+addButton(stage,800,480,"   UP   ",0,-100);
+addButton(stage,800,520,"  DOWN  ",0,100);
+addButton(stage,720,520,"  LEFT  ",-100,0);
+addButton(stage,880,520,"  RIGHT ",100,0);
+
+addButton(stage,80,500,"CONFIRM",0,1);
+addButton(stage,180,500,"CANCEL ",1,0);
+
+stage.setScene(scene);
+stage.show();
+
+
+
+
+
+/*
 if ((e!=null)&&(e.getEventType()==KeyEvent.KEY_PRESSED))
 switch (e.getCode())	
 
@@ -86,26 +128,44 @@ switch (e.getCode())
      return;
 	 
 	 }
-
-System.out.println("456");	  
+*/
 
 }
 
+private void resetStage(Stage stage) {
+	
+	SetImage(stage,"background//map.jpg",0,0,Is_Map);
+    displayContents(stage);
+	displayCursor(CursorX,CursorY, stage);
+	
+}
+
+private void addButton(Stage stage, int LayoutX, int LayoutY,String ButtonName, int i, int j) {
+	Button btn = new Button();
+	btn.setLayoutX(LayoutX);
+	btn.setLayoutY(LayoutY);
+	btn.setText(ButtonName);
+	btn.setOnAction(new EventHandler<ActionEvent>() {
+		 
+	    public void handle(ActionEvent event) {
+	        moveCursor(i,j,stage);
+	        gameProcess(stage);
+	    }	
+	});
+	root.getChildren().add(btn);
+}
+
 private void displayContents(Stage stage) {
-	SetImage(stage,"hero//paladin.png",100,200,!Is_Map);
+	SetImage(stage,"hero//paladin.png",hero.getX(),hero.getY(),!Is_Map);
 	SetImage(stage,"enemy//Skeleton_Mage.png",400,200,!Is_Map);
 	
 }
 
 
 private void displayCursor(int cursorX, int cursorY, Stage stage) {
-	SetImage(stage,"background//cursor_blue.png",100,200,!Is_Map);
-	SetImage(stage,"background//cursor_blue.png",0,200,!Is_Map);
-	SetImage(stage,"background//cursor_blue.png",200,200,!Is_Map);
-	SetImage(stage,"background//cursor_blue.png",100,300,!Is_Map);
-	SetImage(stage,"background//cursor_blue.png",100,100,!Is_Map);
-
-	SetImage(stage,"background//cursor.png",100,400,!Is_Map);
+	SetImage(stage,"background//cursor_blue.png",cursorX,cursorY,!Is_Map);
+	
+//	SetImage(stage,"background//cursor.png",cursorX+100,cursorY,!Is_Map);
 	
 }
 
