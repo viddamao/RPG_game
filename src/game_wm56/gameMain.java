@@ -26,32 +26,84 @@ private static final boolean Is_Map = true;
 private	Group root = new Group();
 private Scene scene = new Scene(root);
 private Image img=null;
-private int CursorX = 100, CursorY = 200;
-
+private int CursorX = 100, CursorY = 400;
+private Stage MyStage = new Stage();
+private boolean encounterEnemy = false;
+private final boolean Is_Red=true;
 
 
 public void start(Stage stage) throws IOException{
 	
-	SetImage(stage,"background//map.jpg",0,0,Is_Map);
-	LoadContents(stage);
+	SetImage("background//map.jpg",0,0,Is_Map);
+	LoadContents();
+	MyStage = stage;
 	
-	stage.setTitle("Legend of Paladins");
-	stage.setResizable(false);
+	MyStage.setTitle("Legend of Paladins");
+	MyStage.setResizable(false);
 	 
-	gameProcess(stage);
+	gameProcess();
 }
 
-private void moveCursor(int i, int j, Stage stage) {
-	
-   if (j==1) {confirmAction(stage); return;}
-   if (i==1) {cancelAction();return;}
-   if (i==-1) {attackAction(stage);return;}
-   CursorX+=i;
-   CursorY+=j;
-   
+private void moveCursor(KeyEvent e) {
+		int i = 0,j = 0;
+	if ((e!=null)&&(e.getEventType()==KeyEvent.KEY_PRESSED))
+		switch (e.getCode())	
+
+
+			 {
+			 case LEFT:
+			 if (CursorX>0)
+			 CursorX-=100;
+			 e.consume();
+
+		     System.out.println("Left key typed");
+			 break;
+
+			 case RIGHT:
+			 if (CursorX<900)
+			 CursorX+=100;
+		     System.out.println("Right key typed");
+			 e.consume();
+			 break;
+
+			
+
+			 case UP:
+			 if (CursorY>0)
+			 CursorY-=100;
+			 e.consume();
+			 System.out.println("UP key typed");
+				
+			 break;
+
+			 case DOWN:
+			 if (CursorY<500)
+			 CursorY+=100;
+			 e.consume();
+			 System.out.println("DOWN key typed");
+				
+		     break;
+
+			 case Z:
+			 
+				 confirmAction();
+				 checkEnemy();
+				 return;
+			 
+			 case X:
+				 
+				 cancelAction();
+				 return;
+			 
+			 default:	
+		     
+		     return;
+			 
+			 }	
+	   
 }
 
-private void attackAction(Stage stage) {
+private void checkEnemy() {
 
 	
 	if ((enemy.hasEnemy(CursorX/100,CursorY/100+1))||
@@ -59,17 +111,27 @@ private void attackAction(Stage stage) {
 	(enemy.hasEnemy(CursorX/100+1,CursorY/100))||
 	(enemy.hasEnemy(CursorX/100,CursorY/100-1)))
 	{
-		displayRedCursor(stage);
+		encounterEnemy = true;
+		resetStage();
+
+		displayCursor(CursorX-100,CursorY,Is_Red);
+		displayCursor(CursorX+100,CursorY,Is_Red);
+		displayCursor(CursorX,CursorY+100,Is_Red);
+		displayCursor(CursorX,CursorY-100,Is_Red);
+
 	}
+	
+
 }
 
-private void displayRedCursor(Stage stage) {
-	SetImage(stage,"background//cursor.png",CursorX+100,CursorY,!Is_Map);	
-	SetImage(stage,"background//cursor.png",CursorX-100,CursorY,!Is_Map);
-	SetImage(stage,"background//cursor.png",CursorX,CursorY+100,!Is_Map);
-	SetImage(stage,"background//cursor.png",CursorX,CursorY-100,!Is_Map);
-  
- 	
+private void displayCursor(int i, int j,boolean color) {
+	if (color)
+	SetImage("background//cursor.png",i,j,!Is_Map);	
+	else
+	SetImage("background//cursor_blue.png",i,j,!Is_Map);
+
+
+
 }
 
 private void cancelAction() {
@@ -77,124 +139,63 @@ private void cancelAction() {
 	CursorY=hero.getY();
 }
 
-private void confirmAction(Stage stage) {
+private void confirmAction() {
 	if ((CursorX!=hero.getX())||(CursorY!=hero.getY()))
 			{
 		   hero.setX(CursorX);
 		   hero.setY(CursorY);
 		   
 			}
-	resetStage(stage);
+	//resetStage();
 	
 }
 
-private  void gameProcess(Stage stage) {
+private  void gameProcess() {
 
 
+if (!encounterEnemy)
+resetStage();
 
-resetStage(stage);
-
-
-addButton(stage,800,480,"   UP   ",0,-100);
-addButton(stage,800,520,"  DOWN  ",0,100);
-addButton(stage,720,520,"  LEFT  ",-100,0);
-addButton(stage,880,520,"  RIGHT ",100,0);
-
-addButton(stage,80,500,"CONFIRM",0,1);
-addButton(stage,160,500,"CANCEL ",1,0);
-addButton(stage,240,500,"ATTACK ",-1,0);
-
-stage.setScene(scene);
-stage.show();
-
-
-
-
-
-/*
-if ((e!=null)&&(e.getEventType()==KeyEvent.KEY_PRESSED))
-switch (e.getCode())	
-
-
-	 {
-	 case LEFT:
-	 if (CursorX!=0)
-	 CursorX-=100;
-	 e.consume();
-
-     System.out.println("Left key typed");
-	 break;
-
-	 case RIGHT:
-	 if (CursorX!=1000)
-	 CursorX+=100;
-     System.out.println("Right key typed");
-	 e.consume();
-	 break;
-
-	
-
-	 case UP:
-	 if (CursorY!=0)
-	 CursorX-=100;
-	 e.consume();
-	 break;
-
-	 case DOWN:
-	 if (CursorY!=600)
-	 CursorX+=100;
-	 e.consume();
-     break;
-
-	 default:	
-     
-     return;
-	 
-	 }
-*/
-
-}
-
-private void resetStage(Stage stage) {
-	
-	SetImage(stage,"background//map.jpg",0,0,Is_Map);
-    displayContents(stage);
-	displayCursor(CursorX,CursorY, stage);
-	
-}
-
-private void addButton(Stage stage, int LayoutX, int LayoutY,String ButtonName, int i, int j) {
-	Button btn = new Button();
-	btn.setLayoutX(LayoutX);
-	btn.setLayoutY(LayoutY);
-	btn.setText(ButtonName);
-	btn.setOnAction(new EventHandler<ActionEvent>() {
+scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 		 
-	    public void handle(ActionEvent event) {
-	        moveCursor(i,j,stage);
-	        gameProcess(stage);
-	    }	
+		public void handle(KeyEvent event) {
+			 moveCursor(event);
+
+			MyStage.setScene(scene);
+			MyStage.show();
+
+			 gameProcess();
+		}	
 	});
-	root.getChildren().add(btn);
+
+
+
 }
 
-private void displayContents(Stage stage) {
-	SetImage(stage,"hero//paladin.png",hero.getX(),hero.getY(),!Is_Map);
-	SetImage(stage,"enemy//Skeleton_Mage.png",400,200,!Is_Map);
+private void resetStage() {
+	
+	SetImage("background//map.jpg",0,0,Is_Map);
+    displayContents();
+	displayCursor(CursorX,CursorY,false);
+	
+}
+
+private void displayContents() {
+	
+	//can use a input file to save all the addresses and stuff 
+	SetImage("hero//paladin.png",hero.getX(),hero.getY(),!Is_Map);
+	SetImage("enemy//Skeleton_Warrior.png",200,100,!Is_Map);
+	SetImage("enemy//Skeleton_Mage.png",500,300,!Is_Map);
+	SetImage("enemy//Boss.png",900,400,!Is_Map);
+	SetImage("background//final.png",900,500,!Is_Map);
+	
 	
 }
 
 
-private void displayCursor(int cursorX, int cursorY, Stage stage) {
-	SetImage(stage,"background//cursor_blue.png",cursorX,cursorY,!Is_Map);
-	
-	//SetImage(stage,"background//cursor.png",cursorX+100,cursorY,!Is_Map);
 
 
-}
-
-
-private void LoadContents(Stage stage) throws IOException {
+private void LoadContents() throws IOException {
   Scanner s = null;
 	try{
 	s=new Scanner(new BufferedReader(new FileReader(".\\res\\data.txt")));
@@ -217,7 +218,7 @@ finally
 
 
 
-private void SetImage(Stage stage, String directory,int x,int y,boolean flag) {
+private void SetImage(String directory,int x,int y,boolean flag) {
 	ImageView background=new ImageView();
 	 File file = new File(".//res//"+directory);
 	if (flag)
@@ -232,10 +233,10 @@ private void SetImage(Stage stage, String directory,int x,int y,boolean flag) {
      box.getChildren().add(background);
      box.relocate(x, y);
      root.getChildren().add(box);
-	 stage.setScene(scene); 
-	 stage.setWidth(1000);
-	 stage.setHeight(600);
-	 stage.show(); 
+	 MyStage.setScene(scene); 
+	 MyStage.setWidth(1000);
+	 MyStage.setHeight(600);
+	 MyStage.show(); 
 
 }
 
