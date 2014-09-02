@@ -7,7 +7,7 @@ public final int Max_level=25;
 //hero coordinate on the map, x from 1 to 10, y from 1 to 6	
 public static int x=100;
 
-public static int y=200;
+public static int y=400;
 
 
 //Hero type, 1 for paladin and 2 for mage
