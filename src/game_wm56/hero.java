@@ -10,11 +10,18 @@ public static int x=100;
 public static int y=400;
 
 
-//Hero type, 1 for paladin and 2 for mage
-public int heroType;
-
 //hero stats
-public int playerLevel,currentHealth,totalHealth,playerAttack,playerDefense,experiencem;
+public static int playerLevel = 1;
+
+public int currentHealth;
+
+public int totalHealth;
+
+public int playerAttack;
+
+public int playerDefense;
+
+public int experience;
 
 
 public static int getX(){
@@ -30,6 +37,10 @@ public static void setX(int xValue){
 }
 public static void setY(int yValue){
 	y=yValue;
+}
+
+public static  int getlvl() {
+	return playerLevel;
 }
 		
 }
