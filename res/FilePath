@@ -1,0 +1,13 @@
+.\\res\\textLocation
+.\\res\\botLocation
+.\\res\\mapinfo
+.\\res\\heroData
+.\\res\\enemyStat
+background//background.png
+enemy//Skeleton_Warrior.png
+enemy//Skeleton_Mage.png
+enemy//goblin.png
+enemy//Boss.png
+background//final.png
+hero//wizard.png
+hero//paladin.png
