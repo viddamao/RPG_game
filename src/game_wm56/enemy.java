@@ -33,5 +33,9 @@ public static void removeBot(int cursorX, int cursorY) {
 	Enemy[cursorX/100][cursorY/100]=false;
 }
 
+public static void addBot(int cursorX, int cursorY) {
+	Enemy[cursorX/100][cursorY/100]=true;
+}
+
 
 }
