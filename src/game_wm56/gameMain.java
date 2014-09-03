@@ -1,5 +1,7 @@
 package game_wm56;
 
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,15 +10,13 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -56,7 +56,7 @@ public void start(Stage stage) throws IOException{
 
 
 private void initMenu() {
-	 SetImage("background//menuscreen.png",0,0,Is_Map);
+	 displayImage("background//menuscreen.png",0,0,0);
 	 MyStage.setScene(scene);
 	 MyStage.show();
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -176,6 +176,8 @@ private void performAttack() {
 			break;
 	int heroDmg = heroStat[5]-enemyStat[i][4];
 	int enemyDmg = enemyStat[i][3]-heroStat[6];
+	if (heroDmg<0) heroDmg=0;
+	if (enemyDmg<0) enemyDmg=0;
 	if (heroDmg>enemyStat[i][1])
 	{
 		enemyStat[i][0]=0;
@@ -196,7 +198,7 @@ private void performAttack() {
 
 private void gameOver() {
 	System.out.println("Game over!");
-	SetImage("background//death.jpg",0,0,Is_Map);
+	displayImage("background//death.jpg",0,0,0);
     
 	scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 		 
@@ -259,6 +261,7 @@ scene.setOnMouseReleased(new EventHandler<MouseEvent>(){
 	
 });
 */
+	
 scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 		 
 		public void handle(KeyEvent event) {
@@ -280,25 +283,53 @@ scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 
 private void resetStage() {
 	
-	SetImage("background//background.png",0,0,Is_Map);
+	displayImage("background//background_Sept1.png",0,0,0);
     displayContents();
+	monsterRespawn();
+}
+
+private void monsterRespawn() {
+	for (int i=0;i<4;i++)
+	
+		if (enemyStat[i][0]==0)
+		{
+			enemyStat[i][9]+=1;
+			if (enemyStat[i][9]>=enemyStat[i][10])
+			{
+				
+			    enemyStat[i][0]=1;
+			    enemyStat[i][1]=enemyStat[i][2];
+				enemyStat[i][9]=0;	
+				enemy.addBot(enemyStat[i][7],enemyStat[i][8]);
+			}
+			}
 	
 }
+
 
 private void displayContents() {
 	
 	//can use a input file to save all the addresses and stuff 
 
-	SetImage(filePath[11],botLocation[0][0],botLocation[0][1],!Is_Map);
-	SetImage(filePath[12],CursorX,CursorY,!Is_Map);
-
+	displayImage(filePath[11],botLocation[0][0],botLocation[0][1],1);
+	displayImage(filePath[12],CursorX,CursorY,1);
+  
 	
 	displayEnemy();
 	displayValues();
+	updateBar();
 	
 }
 
 
+
+
+private void updateBar() {
+	displayImage("background//HP_Bar.png",1050,303,2);
+	displayImage("background//EXP_Bar.png",1050,360,3);
+	MyStage.show();
+
+}
 
 
 private void displayValues() {
@@ -310,7 +341,7 @@ private void displayValues() {
 private void setText(String text, int x,int y) {
 	 Text t=new Text();
 	 t.setText(text);
-	 t.setFont(Font.font ("Verdana",FontWeight.BOLD, 26));
+	 t.setFont(Font.font ("Verdana",FontWeight.BOLD, 20));
 	 t.setFill(Color.BLACK);
 	 HBox box = new HBox();
 	 box.getChildren().add(t);
@@ -326,7 +357,7 @@ private void setText(String text, int x,int y) {
 
 private void displayEnemy() {
 	for (int i=0;i<5;i++)
-	 if (enemyStat[i][0]==1) SetImage(filePath[i+6],botLocation[i+1][0],botLocation[i+1][1],!Is_Map);
+	 if (enemyStat[i][0]==1) displayImage(filePath[i+6],botLocation[i+1][0],botLocation[i+1][1],1);
 	
 	
 }
@@ -415,14 +446,28 @@ private void readFile(String fileName,int flag) throws FileNotFoundException {
 
 
 
-private void SetImage(String directory,int x,int y,boolean flag) {
+private void displayImage(String directory,int x,int y,int flag) {
 	ImageView background=new ImageView();
 	 File file = new File(".//res//"+directory);
-	if (flag)
+	switch (flag){
+	
+	case 0:
+	{
 	  img = new Image(file.toURI().toString(),1200,600,false,false);
-	 else
+	  break;
+	}
+	case 1:
+	{
 	  img = new Image(file.toURI().toString(),100,100,false,false);
-	 
+	  break;
+	}
+	case 2:
+	case 3:
+	{
+      Image Myimg = new Image(file.toURI().toString(),120,22,false,false);
+      img = cropBar(flag,Myimg);
+	}
+	} 
 	 background.setImage(img);
 	 
 
@@ -436,6 +481,30 @@ private void SetImage(String directory,int x,int y,boolean flag) {
 	
 	 MyStage.show(); 
 
+}
+
+private Image cropBar(int flag,Image img) {
+	PixelReader reader = img.getPixelReader();
+	
+	if (flag==2)
+	{
+	System.out.println(heroStat[1]);
+	System.out.println(heroStat[2]);
+	System.out.println((heroStat[1]*120)/heroStat[2]);
+	System.out.println();
+	
+	WritableImage newImage = new WritableImage(reader, 0, 0, ((heroStat[1]*120)/heroStat[2]), 22);
+	return newImage;
+  	
+	}
+	else
+	{
+     WritableImage newImage = new WritableImage(reader, 0, 0, ((heroStat[3])*120)/heroStat[4]+1, 22);
+	 return newImage;
+	  		
+	}
+	
+	
 }
 
 
