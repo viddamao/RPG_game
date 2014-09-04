@@ -31,6 +31,7 @@ public  class gameMain extends Application{
 private	Group root = new Group();
 private Scene scene = new Scene(root);
 private Image img=null;
+private boolean isHardMode=false;
 private ImageView heroNode = new ImageView();
 File file = new File(".//res//hero//paladin.png");
 private Image heroImg= new Image(file.toURI().toString(),100,120, false, false);
@@ -66,11 +67,11 @@ public void start(Stage stage) throws IOException{
 
 private void initMenu() {
 	
-	 menuScene(1);
+	 displayScreen(1);
 }
 
 
-private void menuScene(int flag) {
+private void displayScreen(int flag) {
 	ImageView Node = new ImageView();
 	switch (flag){
 	case 1:
@@ -90,80 +91,116 @@ private void menuScene(int flag) {
 		file = new File(".//res//background//cheat code.png");
 		break;
 		}
-	
+	case 4:
+	{
+		file = new File(".//res//background//congratulations.png");
+		break;
+	}
 	
 	}	
-    img= new Image(file.toURI().toString(),1200,600, false, false);
+    Image img= new Image(file.toURI().toString(),1200,600, false, false);
     Node.setImage(img);
     Group root2=new Group();
     
 	root2.getChildren().add(Node); 
-      Scene scene2 = new Scene(root2, 1200, 620, Color.RED);
 	
-     MyStage.setScene(scene2);
-     MyStage.show();
-		scene2.setOnKeyPressed(new EventHandler<KeyEvent>() {
+	Scene scene2 = new Scene(root2, 1200, 620, Color.RED);
+	scene2.setOnKeyPressed(new EventHandler<KeyEvent>() {
+		 
+		public void handle(KeyEvent event) {
+			Handle(event);
+
+		}
+	
+
+		
+		}
+	
+   	);
+	
+    if (flag==4)
+    {
+    	Group root3 = new Group();
+    	root3.getChildren().add(Node);
+    	Scene winningScene = new Scene(root3, 1200, 620, Color.BLUE);
+    	winningScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			 
 			public void handle(KeyEvent event) {
-				if ((event!=null)&&(event.getEventType()==KeyEvent.KEY_PRESSED))
-	   				switch (event.getCode())	
+				Handle(event);
 
-
-	   					 {
-	   				case S:
-	   					
-	   				    {
-	   				    	gameProcess();
-	   				    	break;
-	   					}
-	   				
-	   				case H:
-	   				{
-	   				     	menuScene(2);
-	   				     break;
-	   				}
-	   				case Q:
-	   				{
-	   					MyStage.close();
-	   				    System.exit(0);
-	   					break;
-	   				}
-	   				case B:
-	   				{
-	   					menuScene(1);
-	   					break;
-	   				}
-	   				case C:
-	   				{
-	   					menuScene(3);
-	   				}
-	   			 } 
-	   			
-	   		}
+			}
+		
 
 			
-	   	});
-				
+			}		
+		);
+    	  MyStage.setScene(winningScene);
+    }	
+    	else
+    		 MyStage.setScene(scene2);
+        
+  
+   
+    
+	
+
+    MyStage.show();
+     
+		
 		
 }
+private void Handle(KeyEvent event) {
+	if ((event!=null)&&(event.getEventType()==KeyEvent.KEY_PRESSED))
+			switch (event.getCode())	
 
 
-private void menuSelection(KeyEvent e) {
-	if ((e!=null)&&(e.getEventType()==KeyEvent.KEY_PRESSED))
-		switch (e.getCode())	
-		{
-		case ENTER:
-		{
+				 {
 			
-		}
-		case SPACE:
-		{
-			e.consume();
-			initMenu();
-		}
-		}
-	
-}	
+			case R:
+			
+			case I:
+			{
+				isHardMode=true;
+			
+			
+			}
+		    case S:
+				
+			    {
+			    	gameProcess();
+			    	break;
+				}
+			
+			case H:
+			{
+			     	displayScreen(2);
+			     break;
+			}
+			case Q:
+			{
+				MyStage.close();
+			    System.exit(0);
+				break;
+			}
+			case B:
+			{
+				displayScreen(1);
+				break;
+			}
+			case C:
+			{
+				displayScreen(3);
+			}
+			
+			
+		default:
+			break;
+		 } 
+		
+	}
+			
+
+
 private void moveHero(KeyEvent e) {
 	if ((e!=null)&&(e.getEventType()==KeyEvent.KEY_PRESSED))
 		switch (e.getCode())	
@@ -287,7 +324,6 @@ private void performAttack() {
 	for (i=0;i<5;i++)
 		if ((enemyStat[i][7]==CursorX)&&(enemyStat[i][8]==CursorY))
 			break;
-	displayEnemyInfo(i);
 	
 	int heroDmg = heroStat[5]-enemyStat[i][4];
 	int enemyDmg = enemyStat[i][3]-heroStat[6];
@@ -295,6 +331,12 @@ private void performAttack() {
 	if (enemyDmg<0) enemyDmg=0;
 	if (heroDmg>enemyStat[i][1])
 	{
+		if (i==3) 
+			{
+			displayScreen(4);
+			
+			}
+		
 		enemyStat[i][0]=0;
 		enemy.removeBot(CursorX,CursorY);
 		heroStat[3]+=enemyStat[i][5];
@@ -310,10 +352,6 @@ private void performAttack() {
 	
 }
 
-
-private void displayEnemyInfo(int i) {
-	
-}
 
 
 private void gameOver() {
@@ -333,7 +371,6 @@ private void gameOver() {
     scene2.setOnKeyPressed(new EventHandler<KeyEvent>() {
 		 
 		public void handle(KeyEvent e) {
-			 System.out.println("345");
 				
 			if ((e!=null)&&(e.getEventType()==KeyEvent.KEY_PRESSED))
 				switch (e.getCode())	
@@ -345,6 +382,8 @@ private void gameOver() {
 				    {
 	            	  initMenu();	
 					}
+				default:
+					break;
 				
 			 } 
 			
@@ -366,6 +405,7 @@ for (int i=1;i<7;i++)
 heroStat[i]=((Double)(heroStat[i]*1.2)).intValue();
 
 heroStat[1]=heroStat[2];
+if (heroStat[3]>=heroStat[4]) levelUp();
 }
 
 
