@@ -2,7 +2,7 @@
 .\\res\\mapinfo
 .\\res\\heroData
 .\\res\\enemyStat
-background//background.png
+.\\res\\bossPath
 enemy//Skeleton_Warrior.png
 enemy//Skeleton_Mage.png
 enemy//goblin.png
