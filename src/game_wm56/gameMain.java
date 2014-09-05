@@ -31,6 +31,7 @@ public  class gameMain extends Application{
 private	Group root = new Group();
 private Scene scene = new Scene(root);
 private Image img=null;
+private int turn=0;
 private boolean gameEnd=false;
 private boolean isHardMode=false;
 private ImageView heroNode = new ImageView();
@@ -45,6 +46,7 @@ private int[][] textValueLocation=new int [8][2];
 private String[] filePath=new String[15];
 private int[ ] heroStat = new int[8];
 private int[][] enemyStat=new int [5][13];
+private int[][] bossPath=new int [100][2];
 private int currentI;
 
 public void start(Stage stage) throws IOException{
@@ -114,13 +116,13 @@ private void displayScreen(int flag) {
     Node.setImage(img);
     Group root=new Group();
     
-  
-	root.getChildren().add(Node); 
-	  if (flag==6)
+   if (flag==6)
 	{
 		updateBar();
 		displayValues();
 	}
+	root.getChildren().add(Node); 
+	 
 	Scene scene = new Scene(root, 1200, 620, Color.RED);
 	
 	scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -199,23 +201,33 @@ private void Handle(KeyEvent event) {
 			
 			case DIGIT1:
 			{
+				if (heroStat[7]>=100)
+				{
 			    heroStat[7]-=100;
 				heroStat[1]+=heroStat[2]/2;
 				if (heroStat[1]>heroStat[2])
 					heroStat[1]=heroStat[2];
-				
+				}
 				break;
 			}
 			case DIGIT2:
 			{
+				if (heroStat[7]>=100)
+				{
+			  
 				heroStat[7]-=100;
 				heroStat[5]+=10;
+				}
 				break;
 			}
 			case DIGIT3:
 			{
+				if (heroStat[7]>=100)
+				{
+			  
 				heroStat[7]-=100;
 				heroStat[6]+=10;
+				}
 				break;
 			}
 				
@@ -411,7 +423,12 @@ if (heroStat[3]>=heroStat[4]) levelUp();
 
 
 private  void gameProcess() {
-moveBoss();
+	
+if (isHardMode)
+	{moveBoss();
+turn++;
+if (turn==28) turn=0;
+	}
 resetStage();
 keyHandler();
 
@@ -419,8 +436,17 @@ keyHandler();
 
 private void moveBoss() {
 
-enemy.removeBot(enemyStat[3][8],enemyStat[3][9]);
+if (!(((enemyStat[3][7]+bossPath[turn][0])==CursorX)&&((enemyStat[3][8]+bossPath[turn][1])==CursorY)))	
+{
+enemy.removeBot(enemyStat[3][7],enemyStat[3][8]);
+enemyStat[3][7]+=bossPath[turn][0];
+enemyStat[3][8]+=bossPath[turn][1];
+enemyStat[3][11]+=bossPath[turn][0];
+enemyStat[3][12]+=bossPath[turn][1];
 
+enemy.addBot(enemyStat[3][7],enemyStat[3][8]);
+}
+else turn-=1;
 }
 
 
@@ -498,18 +524,12 @@ private void displayContents() {
 		
 		root=new Group();
 		scene=new Scene(root, 0, 0);
-		showShopMenu();
+		displayScreen(6);
+		
 		
 	}
 }
 
-
-
-
-private void showShopMenu() {
-	
-	displayScreen(6);
-}
 
 
 private void updateEnemyHealthBars() {
@@ -576,7 +596,7 @@ enemy.enemy_Init();
 readFile(".\\res\\FilePath",0);
 heroNode.setImage(heroImg);
 
-for (int i=0;i<4;i++)
+for (int i=0;i<5;i++)
 {
 readFile(filePath[i],i+1);
 }
@@ -628,9 +648,19 @@ private void readFile(String fileName,int flag) throws FileNotFoundException {
 					i++;
 				}
 				continue;
-
-			   
 		   }
+		   case 5:
+		   {
+			   bossPath[i][j]=s.nextInt();   
+			   j++;
+				if (j==2){
+					j = 0;
+					i++;
+				}
+				continue;
+		      
+		   }
+		   
 		   }
 			j++;
 			if (j==2){
@@ -685,7 +715,6 @@ private void displayImage(String directory,int x,int y,int flag) {
 
 	 HBox box = new HBox();
      box.getChildren().add(background);
- 
      box.relocate(x, y);
      root.getChildren().add(box);
 	 MyStage.setScene(scene); 
