@@ -31,6 +31,7 @@ public  class gameMain extends Application{
 private	Group root = new Group();
 private Scene scene = new Scene(root);
 private Image img=null;
+private boolean gameEnd=false;
 private boolean isHardMode=false;
 private ImageView heroNode = new ImageView();
 File file = new File(".//res//hero//paladin.png");
@@ -41,7 +42,6 @@ private int CursorX_p = 100, CursorY_p = 400;
 private Stage MyStage = null;
 private boolean[][]map= new boolean [12][8];
 private int[][] textValueLocation=new int [8][2];
-private int[][] botLocation=new int[8][2];
 private String[] filePath=new String[15];
 private int[ ] heroStat = new int[8];
 private int[][] enemyStat=new int [5][13];
@@ -57,6 +57,7 @@ public void start(Stage stage) throws IOException{
 	MyStage.setWidth(1200);
 	MyStage.setHeight(620);
     
+	MyStage.show();
 	initMenu();
    
 
@@ -68,6 +69,7 @@ public void start(Stage stage) throws IOException{
 private void initMenu() {
 	
 	 displayScreen(1);
+	 
 }
 
 
@@ -89,23 +91,39 @@ private void displayScreen(int flag) {
 	{
 
 		file = new File(".//res//background//cheat code.png");
-		break;
-		}
+	    break;
+	}
 	case 4:
 	{
 		file = new File(".//res//background//congratulations.png");
 		break;
 	}
+	case 5:
+	{
+		file = new File(".//res//background//death.jpg");
+		break;
+	}
+	case 6:
+	{
+		file = new File(".//res//background//shop_Sept4.png");
+		break;
+	}		
 	
 	}	
     Image img= new Image(file.toURI().toString(),1200,600, false, false);
     Node.setImage(img);
-    Group root2=new Group();
+    Group root=new Group();
     
-	root2.getChildren().add(Node); 
+  
+	root.getChildren().add(Node); 
+	  if (flag==6)
+	{
+		updateBar();
+		displayValues();
+	}
+	Scene scene = new Scene(root, 1200, 620, Color.RED);
 	
-	Scene scene2 = new Scene(root2, 1200, 620, Color.RED);
-	scene2.setOnKeyPressed(new EventHandler<KeyEvent>() {
+	scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 		 
 		public void handle(KeyEvent event) {
 			Handle(event);
@@ -117,38 +135,13 @@ private void displayScreen(int flag) {
 		}
 	
    	);
-	
-    if (flag==4)
-    {
-    	Group root3 = new Group();
-    	root3.getChildren().add(Node);
-    	Scene winningScene = new Scene(root3, 1200, 620, Color.BLUE);
-    	winningScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			 
-			public void handle(KeyEvent event) {
-				Handle(event);
-
-			}
-		
-
-			
-			}		
-		);
-    	  MyStage.setScene(winningScene);
-    }	
-    	else
-    		 MyStage.setScene(scene2);
-        
+ MyStage.setScene(scene); 
+    		    
   
    
-    
-	
-
-    MyStage.show();
-     
-		
 		
 }
+
 private void Handle(KeyEvent event) {
 	if ((event!=null)&&(event.getEventType()==KeyEvent.KEY_PRESSED))
 			switch (event.getCode())	
@@ -167,6 +160,7 @@ private void Handle(KeyEvent event) {
 		    case S:
 				
 			    {
+			    	gameEnd=false;
 			    	gameProcess();
 			    	break;
 				}
@@ -182,6 +176,17 @@ private void Handle(KeyEvent event) {
 			    System.exit(0);
 				break;
 			}
+			case ESCAPE:
+				
+		    {
+        	 try {
+				start(MyStage);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+        	 break;
+		    }
+
 			case B:
 			{
 				displayScreen(1);
@@ -192,7 +197,35 @@ private void Handle(KeyEvent event) {
 				displayScreen(3);
 			}
 			
-			
+			case DIGIT1:
+			{
+			    heroStat[7]-=100;
+				heroStat[1]+=heroStat[2]/2;
+				if (heroStat[1]>heroStat[2])
+					heroStat[1]=heroStat[2];
+				
+				break;
+			}
+			case DIGIT2:
+			{
+				heroStat[7]-=100;
+				heroStat[5]+=10;
+				break;
+			}
+			case DIGIT3:
+			{
+				heroStat[7]-=100;
+				heroStat[6]+=10;
+				break;
+			}
+				
+			case DIGIT4:
+			{
+				CursorX=0;
+				CursorY=400;
+				gameProcess();  
+				
+			}
 		default:
 			break;
 		 } 
@@ -213,22 +246,7 @@ private void moveHero(KeyEvent e) {
 			 
 			 if (!(canMove()))
 				 CursorX+=100;
-			 else
-			 {
-				 heroNode.setImage(heroImg);
-				  Group root = new Group(); 
-				  Scene scene = new Scene(root, 1200, 620, Color.BLACK); 
-			       
-				   root.getChildren().add(heroNode); 
-				  
-				 TranslateTransition translate = new TranslateTransition(Duration.millis(10000)); 
-			        translate.setToX(-100); 
-			        translate.setToY(0); 
-			        ParallelTransition transition = new ParallelTransition(heroNode,translate); 
-			        transition.play(); 
-			        MyStage.setScene(scene); 
-			        MyStage.show(); 
-			 }
+		
 			 e.consume();
 
 			 break;
@@ -267,19 +285,27 @@ private void moveHero(KeyEvent e) {
 			 case A:
 				 
 			 heroStat[5]+=1000;
+			 e.consume();
+
 			 break;
 		
 			 case D:
 			 heroStat[6]+=1000;
+
+			 e.consume();
 			 break;
 			 
 			 case H:
+			 {
 			 heroStat[1]= heroStat[2];
+			 e.consume();
 			 break;
-			 
+			 }
 			 case G:
+			 {
 			 heroStat[7]+=1000;	 
-			 
+			 break;
+			 }
 			 case Q:
 				{
 					MyStage.close();
@@ -329,10 +355,12 @@ private void performAttack() {
 	int enemyDmg = enemyStat[i][3]-heroStat[6];
 	if (heroDmg<0) heroDmg=0;
 	if (enemyDmg<0) enemyDmg=0;
+	
 	if (heroDmg>enemyStat[i][1])
 	{
 		if (i==3) 
 			{
+			gameEnd=true;
 			displayScreen(4);
 			
 			}
@@ -347,7 +375,11 @@ private void performAttack() {
 	{
 	    enemyStat[i][1]-=heroDmg;
 	    heroStat[1]-=enemyDmg;
-	    if (heroStat[1]<=0) gameOver();
+	    if (heroStat[1]<=0) {
+	    	
+	    	gameOver();
+	    	
+	    }
 	}
 	
 }
@@ -355,42 +387,10 @@ private void performAttack() {
 
 
 private void gameOver() {
+	 displayScreen(5);
+     gameEnd=true;
 	 System.out.println("Game over!");
-	
-	 Group root2=new Group();
-	 Scene scene2 = new Scene(root2, 1200, 620, Color.BLACK); 
-	 ImageView node=new ImageView();
-	 File file = new File(".//res//background//death.jpg");
-	 Image img = new Image(file.toURI().toString(),1200,600,false,false);
-     node.setImage(img);
-     root2.getChildren().add(node);
-     scene.getRoot().relocate(2000, 2000);
-    MyStage.setScene(scene2);
- 
     
-    scene2.setOnKeyPressed(new EventHandler<KeyEvent>() {
-		 
-		public void handle(KeyEvent e) {
-				
-			if ((e!=null)&&(e.getEventType()==KeyEvent.KEY_PRESSED))
-				switch (e.getCode())	
-
-
-					 {
-				case ESCAPE:
-					
-				    {
-	            	  initMenu();	
-					}
-				default:
-					break;
-				
-			 } 
-			
-		}	
-	});
-    MyStage.show();
-	
 }
 
 
@@ -406,21 +406,31 @@ heroStat[i]=((Double)(heroStat[i]*1.2)).intValue();
 
 heroStat[1]=heroStat[2];
 if (heroStat[3]>=heroStat[4]) levelUp();
+
 }
 
 
 private  void gameProcess() {
-
+moveBoss();
 resetStage();
 keyHandler();
 
 }
+
+private void moveBoss() {
+
+enemy.removeBot(enemyStat[3][8],enemyStat[3][9]);
+
+}
+
 
 private void keyHandler() {
 
 	
 scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 		 
+	
+
 		public void handle(KeyEvent event) {
 	
 			
@@ -428,22 +438,30 @@ scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			CursorY_p=CursorY;
 			moveHero(event);
             checkEnemy();
-            MyStage.setScene(scene);
-            MyStage.show();
-
+            checkMerchant();
+           if (!gameEnd)
             gameProcess();
 
-		}	
+		}
+
+	
 	});
 
 }
 
+private void checkMerchant() {
+	if((CursorX==0)&&(CursorY==500))
+	{
+		
+	}
+}	
 private void resetStage() {
 	
 	displayImage("background//background_Sept1.png",0,0,0);
     displayContents();
 	monsterRespawn();
 }
+
 
 private void monsterRespawn() {
 	for (int i=0;i<4;i++)
@@ -468,18 +486,30 @@ private void displayContents() {
 	
 	//can use a input file to save all the addresses and stuff 
 
-	displayImage(filePath[11],botLocation[0][0],botLocation[0][1],1);
-	displayImage(filePath[12],CursorX,CursorY,1);
-  
+	displayImage(filePath[10],0,500,1);
 	
 	displayEnemy();
 	updateEnemyHealthBars();
 	displayValues();
 	updateBar();
-	
+	if (!((CursorX==0)&&(CursorY==500)))displayImage(filePath[11],CursorX,CursorY,1);
+	else 
+	{
+		
+		root=new Group();
+		scene=new Scene(root, 0, 0);
+		showShopMenu();
+		
+	}
 }
 
 
+
+
+private void showShopMenu() {
+	
+	displayScreen(6);
+}
 
 
 private void updateEnemyHealthBars() {
@@ -492,7 +522,7 @@ private void updateEnemyHealthBars() {
 	displayImage("background//enemyhealth.png",enemyStat[i][11],enemyStat[i][12],4);
 	}
 	}
-	MyStage.show();
+	 
 }
 
 
@@ -500,7 +530,7 @@ private void updateBar() {
 	
 	displayImage("background//HP_Bar.png",1050,303,2);
 	displayImage("background//EXP_Bar.png",1050,360,3);
-	MyStage.show();
+	 
 
 }
 
@@ -522,15 +552,14 @@ private void setText(String text, int x,int y) {
 	  box.relocate(x, y);
 	  root.getChildren().add(box);
 	  MyStage.setScene(scene); 
-	  MyStage.show(); 
-
+	  
 }
 
 
 
 private void displayEnemy() {
 	for (int i=0;i<5;i++)
-	 if (enemyStat[i][0]==1) displayImage(filePath[i+6],botLocation[i+1][0],botLocation[i+1][1],1);
+	 if (enemyStat[i][0]==1) displayImage(filePath[i+5],enemyStat[i][7],enemyStat[i][8],1);
 	
 	
 }
@@ -539,10 +568,15 @@ private void displayEnemy() {
 
 
 private void loadData() throws IOException {
-  
+	 CursorX = 100; 
+	 CursorY = 400;
+	 CursorX_p = 100; 
+	 CursorY_p = 400;
 enemy.enemy_Init();
 readFile(".\\res\\FilePath",0);
-for (int i=0;i<5;i++)
+heroNode.setImage(heroImg);
+
+for (int i=0;i<4;i++)
 {
 readFile(filePath[i],i+1);
 }
@@ -566,12 +600,8 @@ private void readFile(String fileName,int flag) throws FileNotFoundException {
 			   textValueLocation[i][j]=s.nextInt();
 			   break;
 		   }
+
 		   case 2:
-		   {
-			   botLocation[i][j]=s.nextInt();   
-	           break;
-		   }
-		   case 3:
 		   {
 			   map[i][j]=!(s.next().charAt(0)== "X".charAt(0));
 				 
@@ -583,13 +613,13 @@ private void readFile(String fileName,int flag) throws FileNotFoundException {
 			 	 }
 			 	 continue;
 		   }
-		   case 4:
+		   case 3:
 		   {
 			   heroStat[i]=s.nextInt();
 			   i++;
 			   continue;
 		   }
-		   case 5:
+		   case 4:
 		   {
 			   enemyStat[i][j]=s.nextInt();   
 			   j++;
@@ -660,7 +690,7 @@ private void displayImage(String directory,int x,int y,int flag) {
      root.getChildren().add(box);
 	 MyStage.setScene(scene); 
 	
-	 MyStage.show(); 
+	   
 
 }
 
