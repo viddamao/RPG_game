@@ -1,5 +1,25 @@
 package game_wm56;
-
+/***********************************
+ *Game by Vidda Wenjun Mao		   *
+ *Credit and reference      	   *
+ * picture and font resources      *
+ * from Battleheart				   *
+ * Diablo 3						   *
+ * 								   *
+ * Inspired by                     *
+ * Wind Fantasy					   *
+ * Magic Tower					   * 
+ * 								   *			
+ * Javafx Coding reference		   *
+ * Oracle documents 			   *
+ * and the Game Loop			   *
+ * 								   *
+ * 	 			  				   *
+ * Special thx to Max who helps    *	
+ * game testing     			   *
+ * 								   *
+ *                                 *
+ **********************************/
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -7,9 +27,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
-
-import javafx.animation.ParallelTransition;
-import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -25,7 +42,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 public  class gameMain extends Application{
 private	Group root = new Group();
@@ -119,11 +135,13 @@ private void displayScreen(int flag) {
    if (flag==6)
 	{
 		updateBar();
+		MyStage.setScene(scene);
 		displayValues();
 	}
+   
 	root.getChildren().add(Node); 
 	 
-	Scene scene = new Scene(root, 1200, 620, Color.RED);
+	Scene scene = new Scene(root, 1200, 620, Color.BLACK);
 	
 	scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 		 
@@ -597,9 +615,8 @@ readFile(".\\res\\FilePath",0);
 heroNode.setImage(heroImg);
 
 for (int i=0;i<5;i++)
-{
-readFile(filePath[i],i+1);
-}
+    readFile(filePath[i],i+1);
+
 }
 
 private void readFile(String fileName,int flag) throws FileNotFoundException {
@@ -687,8 +704,7 @@ private void displayImage(String directory,int x,int y,int flag) {
 	case 0:
 	{
 	  img = new Image(file.toURI().toString(),1200,600,false,false);
-
-		 scene.setFill(Color.BLACK);
+          scene.setFill(Color.BLACK);
 	  break;
 	}
 	case 1:
@@ -699,15 +715,15 @@ private void displayImage(String directory,int x,int y,int flag) {
 	case 2:
 	case 3:
 	{
-      img = new Image(file.toURI().toString(),120,22,false,false);
-      img = cropBar(flag,img);
-      break;
+          img = new Image(file.toURI().toString(),120,22,false,false);
+          img = cropBar(flag,img);
+          break;
 	}
 	case 4:
 	{
-		 img = new Image(file.toURI().toString(),50,10,false,false);
-		 img = cropBar(flag,img) ;
-		 break;
+	  img = new Image(file.toURI().toString(),50,10,false,false);
+	  img = cropBar(flag,img) ;
+	  break;
 	}
 	} 
 	 background.setImage(img);
@@ -737,7 +753,7 @@ private Image cropBar(int flag,Image img) {
 	}
 	case 3:
 	{
-     WritableImage newImage = new WritableImage(reader, 0, 0, ((heroStat[3])*120)/heroStat[4]+1, 22);
+	 WritableImage newImage = new WritableImage(reader, 0, 0, ((heroStat[3])*120)/heroStat[4]+1, 22);
 	 return newImage;
 	  		
 	}
