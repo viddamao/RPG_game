@@ -5,6 +5,17 @@ Wenjun Mao
 
 Net ID: wm56
 
+
+How to play :
+
+All you need is keyboard.
+
+In the main menu press the initial letter for your selection to select:e.g "S" for "Start",
+
+And I have included a how to and a cheat key introdution in the game menu so just read that before start playing.
+
+
+
 Genre: 
 
 The game I am planning to design is a turn-based RPG game, which means you  walk around the map and fight the monsters. The game mode is kind of like Wind Fantasy but kind of different.
