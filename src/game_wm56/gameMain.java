@@ -65,6 +65,9 @@ private int[][] enemyStat=new int [5][13];
 private int[][] bossPath=new int [100][2];
 private int currentI;
 
+
+//Serve as the main method, calls the initial setting and data loading 
+//and calls the menu display method
 public void start(Stage stage) throws IOException{
    MyStage = stage;
 	
@@ -84,6 +87,7 @@ public void start(Stage stage) throws IOException{
 }
 
 
+//call display method to display the menu screen
 private void initMenu() {
 	
 	 displayScreen(1);
@@ -91,6 +95,9 @@ private void initMenu() {
 }
 
 
+//display an image on the stage
+//Flag shows different images,
+//which I think could get refactored using a file input with data paths and a switch (flag)
 private void displayScreen(int flag) {
 	ImageView Node = new ImageView();
 	switch (flag){
@@ -162,6 +169,8 @@ private void displayScreen(int flag) {
 		
 }
 
+
+//Main key handler for the menu and the game shop
 private void Handle(KeyEvent event) {
 	if ((event!=null)&&(event.getEventType()==KeyEvent.KEY_PRESSED))
 			switch (event.getCode())	
@@ -263,7 +272,8 @@ private void Handle(KeyEvent event) {
 	}
 			
 
-
+//Move hero based on the key pressed by the user
+//Enables the cheat key
 private void moveHero(KeyEvent e) {
 	if ((e!=null)&&(e.getEventType()==KeyEvent.KEY_PRESSED))
 		switch (e.getCode())	
@@ -352,13 +362,15 @@ private void moveHero(KeyEvent e) {
     
 	
 
-
+//Return if the hero can move to a certain block
 private boolean canMove() {
 
 return map[CursorX/100][CursorY/100];
 
 }
 
+
+//Check if certain block has enemy
 private void checkEnemy() {
 
 	
@@ -373,7 +385,8 @@ private void checkEnemy() {
 }
 
 
-
+//if a certain block has enemy,perform the attack action
+//And based on the result branches to different methods
 private void performAttack() {
 	
 	int i=0;
@@ -415,17 +428,16 @@ private void performAttack() {
 }
 
 
-
+//Display gameover screen and set the game over flag
 private void gameOver() {
 	 displayScreen(5);
      gameEnd=true;
-	 System.out.println("Game over!");
     
 }
 
 
 
-
+//level up the hero and modify the hero stats
 private void levelUp() {
 
 heroStat[0]++;
@@ -439,7 +451,7 @@ if (heroStat[3]>=heroStat[4]) levelUp();
 
 }
 
-
+//Main game loop
 private  void gameProcess() {
 	
 if (isHardMode)
@@ -452,6 +464,8 @@ keyHandler();
 
 }
 
+
+//Move the boss position based on a path array
 private void moveBoss() {
 
 if (!(((enemyStat[3][7]+bossPath[turn][0])==CursorX)&&((enemyStat[3][8]+bossPath[turn][1])==CursorY)))	
@@ -467,7 +481,7 @@ enemy.addBot(enemyStat[3][7],enemyStat[3][8]);
 else turn-=1;
 }
 
-
+//Main key handler call moves hero and call perform action method
 private void keyHandler() {
 
 	
@@ -493,12 +507,15 @@ scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 
 }
 
+//Check if hero is in the shop
 private void checkMerchant() {
 	if((CursorX==0)&&(CursorY==500))
 	{
 		
 	}
 }	
+
+//Reset the game screen
 private void resetStage() {
 	
 	displayImage("background//background_Sept1.png",0,0,0);
@@ -506,7 +523,7 @@ private void resetStage() {
 	monsterRespawn();
 }
 
-
+//decrease the respawn time each turn
 private void monsterRespawn() {
 	for (int i=0;i<4;i++)
 	
@@ -525,7 +542,7 @@ private void monsterRespawn() {
 	
 }
 
-
+//call methods to display imgs and values to screen
 private void displayContents() {
 	
 	//can use a input file to save all the addresses and stuff 
@@ -549,7 +566,6 @@ private void displayContents() {
 }
 
 
-
 private void updateEnemyHealthBars() {
 	for (int i=0;i<4;i++)
 	{
@@ -563,7 +579,7 @@ private void updateEnemyHealthBars() {
 	 
 }
 
-
+//update hero health and exp bar
 private void updateBar() {
 	
 	displayImage("background//HP_Bar.png",1050,303,2);
@@ -572,13 +588,14 @@ private void updateBar() {
 
 }
 
-
+//display hero data to the screen
 private void displayValues() {
 	for (int i=0;i<8;i++)
 		setText((((Integer)heroStat[i]).toString()),textValueLocation[i][0],textValueLocation[i][1]);
 	
 }
 
+//helper method to set String text to position x,y 
 private void setText(String text, int x,int y) {
 	 Text t=new Text();
 	 t.setText(text);
@@ -594,7 +611,7 @@ private void setText(String text, int x,int y) {
 }
 
 
-
+//Display all the enemies alive
 private void displayEnemy() {
 	for (int i=0;i<5;i++)
 	 if (enemyStat[i][0]==1) displayImage(filePath[i+5],enemyStat[i][7],enemyStat[i][8],1);
@@ -604,7 +621,7 @@ private void displayEnemy() {
 
 
 
-
+//init hero position and load the data file
 private void loadData() throws IOException {
 	 CursorX = 100; 
 	 CursorY = 400;
@@ -619,6 +636,7 @@ for (int i=0;i<5;i++)
 
 }
 
+//helper method to read different files
 private void readFile(String fileName,int flag) throws FileNotFoundException {
 	Scanner s = null;
 	try{
@@ -696,6 +714,9 @@ private void readFile(String fileName,int flag) throws FileNotFoundException {
 
 
 
+//Helper method to display an image with
+//file name".//res//"+directory to position x,y
+//Flag controls the width,height and the crop choice
 private void displayImage(String directory,int x,int y,int flag) {
 	ImageView background=new ImageView();
 	 File file = new File(".//res//"+directory);
@@ -739,6 +760,7 @@ private void displayImage(String directory,int x,int y,int flag) {
 
 }
 
+//Crop the health bars
 private Image cropBar(int flag,Image img) {
 	PixelReader reader = img.getPixelReader();
 	
@@ -769,7 +791,7 @@ private Image cropBar(int flag,Image img) {
 	
 }
 
-
+//main
 public static void main(String[] args){
     Application.launch(args);
 	
