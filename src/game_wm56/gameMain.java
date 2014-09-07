@@ -281,46 +281,20 @@ private void moveHero(KeyEvent e) {
 
 			 {
 			 case LEFT:
-			 if (CursorX>0)
-			 CursorX-=100;
-			 
-			 if (!(canMove()))
-				 CursorX+=100;
-		
-			 e.consume();
-
+		         performMove(e,-100,0);
 			 break;
 
 			 case RIGHT:
-			 if (CursorX<900)
-
-			 CursorX+=100;
-			 if (!(canMove()))
-				 CursorX-=100;
-			 e.consume();
+			 performMove(e,100,0);
 			 break;
 
-			
-
 			 case UP:
-			 if (CursorY>0)
-
-			 CursorY-=100;
-			 if (!(canMove()))
-				 CursorY+=100;
-
-			 e.consume();
+			 performMove(e,0,-100);
 			 break;
 
 			 case DOWN:
-			 if (CursorY<500)
-
-			 CursorY+=100;
-			 e.consume();
-			 if (!(canMove()))
-				 CursorY-=100;
-				
-		     break;
+			 performMove(e,0,100);
+			 break;
 
 			 case A:
 				 
@@ -347,16 +321,37 @@ private void moveHero(KeyEvent e) {
 			 break;
 			 }
 			 case Q:
-				{
-					MyStage.close();
-				    System.exit(0);
-				}
-			 default:	
-		     
-		     return;
+			{
+			 MyStage.close();
+			 System.exit(0);
+			}
+			default:	
+		          return;
 			 
 			 }	
 	   
+}
+
+//Try perform the move or move cursor back
+private void performMove(KeyEvent e, int xDist, int yDist) {
+     
+    e.consume();
+     CursorX+=xDist;
+     CursorY+=yDist;
+    if ((CursorX<0)||(CursorX>1000)||(CursorY<0)||(CursorY>600)) 
+    {
+	 restoreCursor(xDist, yDist);
+	 return ;  	
+    }
+     if (!(canMove()))
+	 restoreCursor(xDist, yDist);
+	  	
+   }
+
+//Move cursor back
+private void restoreCursor(int xDist, int yDist) {
+    CursorX-=xDist;
+    CursorY-=yDist;
 }
 
     
@@ -790,6 +785,7 @@ private Image cropBar(int flag,Image img) {
 	}
 	
 }
+
 
 //main
 public static void main(String[] args){
